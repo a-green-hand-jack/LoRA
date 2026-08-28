@@ -581,6 +581,10 @@ def main():
 
         for eval_dataset, task in zip(eval_datasets, tasks):
             metrics = trainer.evaluate(eval_dataset=eval_dataset)
+            metrics["trainable_parameter_count"] = sum(
+                parameter.numel() for parameter in model.parameters() if parameter.requires_grad
+            )
+            metrics["peak_vram_bytes"] = torch.cuda.max_memory_allocated() if torch.cuda.is_available() else 0
 
             max_val_samples = data_args.max_val_samples if data_args.max_val_samples is not None else len(eval_dataset)
             metrics["eval_samples"] = min(max_val_samples, len(eval_dataset))
