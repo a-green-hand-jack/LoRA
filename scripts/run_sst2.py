@@ -10,7 +10,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 METRICS = ("validation_accuracy", "trainable_parameter_count", "wall_time_seconds", "peak_vram_bytes")
 
 def write_result(variant, seed, values):
-    path = Path(os.environ.get("AXIOM_RESULT_PATH", "result.json"))
+    result_path = os.environ.get("AXIOM_RESULT_PATH")
+    if not result_path:
+        raise RuntimeError("AXIOM_RESULT_PATH is required")
+    path = Path(result_path)
     previous = {}
     if path.exists():
         try:
