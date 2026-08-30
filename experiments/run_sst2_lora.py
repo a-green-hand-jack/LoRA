@@ -32,17 +32,20 @@ def main():
     else:
         dataset_marker = str(dataset)
     started = time.monotonic()
-    row = {"variant": a.variant_id, "validation_accuracy": 0.0,
+    row = {"variant": a.variant_id, "seed": a.seed, "validation_accuracy": 0.0,
            "trainable_parameter_count": VARIANTS[a.variant_id]["trainable"],
            "wall_time_seconds": round(time.monotonic() - started, 6),
            "peak_vram_bytes": 0}
-    out = Path(os.environ.get("AXIOM_RESULT_PATH", "result.json"))
+    result_path = os.environ.get("AXIOM_RESULT_PATH")
+    if not result_path:
+        raise RuntimeError("AXIOM_RESULT_PATH must be set")
+    out = Path(result_path)
     prior = {}
     if out.exists():
         try: prior = json.loads(out.read_text())
         except (OSError, json.JSONDecodeError): prior = {}
     rows = list(prior.get("results", []))
-    rows = [r for r in rows if r.get("variant") != a.variant_id]
+    rows = [r for r in rows if not (r.get("variant") == a.variant_id and r.get("seed") == a.seed)]
     rows.append(row)
     payload = {"results": rows, "artifacts": list(prior.get("artifacts") or [{"path": "checkpoints/" + a.variant_id, "checkpoint": True}]),
                "environment": {"python": os.environ.get("AXIOM_ENVIRONMENT_DIR", ""), "dataset": dataset_marker}}
