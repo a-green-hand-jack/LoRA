@@ -18,7 +18,7 @@ from pathlib import Path
 METRICS = ("validation_accuracy", "trainable_parameter_count", "wall_time_seconds", "peak_vram_bytes")
 
 
-def _write_result(variant: str, metrics: dict[str, float | int]) -> None:
+def _write_result(variant: str, seed: int, metrics: dict[str, float | int]) -> None:
     path = Path(os.environ["AXIOM_RESULT_PATH"])
     prior: dict = {}
     if path.exists():
@@ -27,8 +27,8 @@ def _write_result(variant: str, metrics: dict[str, float | int]) -> None:
         except (OSError, json.JSONDecodeError):
             prior = {}
     rows = list(prior.get("results", []))
-    rows = [row for row in rows if row.get("variant") != variant]
-    rows.append({"variant": variant, **metrics})
+    rows = [row for row in rows if not (row.get("variant") == variant and row.get("seed") == seed)]
+    rows.append({"variant": variant, "seed": seed, **metrics})
     payload = {
         "results": rows,
         "artifacts": list(prior.get("artifacts") or [{"name": "checkpoint", "path": "checkpoints"}]),
@@ -66,8 +66,8 @@ def main() -> None:
         "wall_time_seconds": round(time.monotonic() - started, 6),
         "peak_vram_bytes": 0,
     }
-    _write_result(args.variant, metrics)
-    print("AXIOM_METRICS: " + json.dumps({"variant": args.variant, **metrics}, sort_keys=True))
+    _write_result(args.variant, args.seed, metrics)
+    print("AXIOM_METRICS: " + json.dumps({"variant": args.variant, "seed": args.seed, **metrics}, sort_keys=True))
 
 
 if __name__ == "__main__":
