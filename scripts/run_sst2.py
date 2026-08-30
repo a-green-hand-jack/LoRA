@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """Run one SST-2 experiment cell and emit the Axiom result contract."""
-import argparse, json, os, tempfile, time
+import argparse, json, os, tempfile, time, sys
 from pathlib import Path
+
+# Keep the repository runnable directly from a clean checkout as well as from
+# an installed environment used by the remote runner.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 METRICS = ("validation_accuracy", "trainable_parameter_count", "wall_time_seconds", "peak_vram_bytes")
 
