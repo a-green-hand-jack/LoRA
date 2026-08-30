@@ -28,7 +28,7 @@ def main():
                 prior = loaded
         except (OSError, ValueError):
             pass
-    prior["results"] = [r for r in prior["results"] if isinstance(r, dict) and not (r.get("variant", {}).get("id") == a.variant_id and r.get("seed") == a.seed)] + [row]
+    prior["results"] = [r for r in prior["results"] if isinstance(r, dict) and not (isinstance(r.get("variant"), dict) and r["variant"].get("id") == a.variant_id and r.get("seed") == a.seed)] + [row]
     result_path.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp = tempfile.mkstemp(prefix=".axiom-result-", dir=result_path.parent)
     try:
