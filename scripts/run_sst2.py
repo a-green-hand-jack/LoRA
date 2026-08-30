@@ -31,7 +31,8 @@ def write_result(variant, seed, values):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--variant-id", required=True)
+    p.add_argument("--variant-id", required=True,
+                   choices=("full-finetune", "lora-r8-alpha16"))
     p.add_argument("--seed", required=True, type=int)
     p.add_argument("--preflight", action="store_true")
     p.add_argument("--dry-run", action="store_true")
