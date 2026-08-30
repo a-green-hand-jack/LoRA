@@ -42,10 +42,18 @@ def main() -> None:
         except (OSError, json.JSONDecodeError):
             prior = {}
     results = list(prior.get("results", []))
-    results = [r for r in results if not (r.get("variant") == row["variant"] and r.get("seed") == row["seed"])]
-    results.append(row)
-    payload = {"results": results, "artifacts": prior.get("artifacts") or [{"path": "checkpoints/" + args.variant_id}],
-               "environment": prior.get("environment") or {"source": "axiom-environment.json"}}
+    # Matrix invocations share one result path: retain prior rows and add this
+    # cell exactly once, without replacing an earlier valid result.
+    key = (row["variant"], row["seed"])
+    if not any((r.get("variant"), r.get("seed")) == key for r in results):
+        results.append(row)
+    artifacts = prior.get("artifacts")
+    if not isinstance(artifacts, list) or not artifacts:
+        artifacts = [{"path": "checkpoints/" + args.variant_id}]
+    environment = prior.get("environment")
+    if not isinstance(environment, dict) or not environment:
+        environment = {"source": "axiom-environment.json"}
+    payload = {"results": results, "artifacts": artifacts, "environment": environment}
     fd, name = tempfile.mkstemp(prefix=".axiom-result-", dir=str(target.parent))
     with os.fdopen(fd, "w") as f:
         json.dump(payload, f, sort_keys=True)
