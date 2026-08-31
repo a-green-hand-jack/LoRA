@@ -1,0 +1,42 @@
+{
+  "code_sha": "c4593f060e6a368d7bb5af5273b8e42810cdef90",
+  "dataset": {
+    "artifacts": [
+      {
+        "digest": {
+          "algorithm": "sha256",
+          "value": "66a253e67968acfabcbe49dbe9da964b42ac1c851c40ab760e8c8942efdb3229"
+        },
+        "path": "sst2/train.parquet",
+        "rows": 67349,
+        "split": "train"
+      },
+      {
+        "digest": {
+          "algorithm": "sha256",
+          "value": "a1371f3b3a7b0bcefa8388799a9359dc3ce76c349cc0079507a7991364fd2a9b"
+        },
+        "path": "sst2/validation.parquet",
+        "rows": 872,
+        "split": "validation"
+      },
+      {
+        "digest": {
+          "algorithm": "sha256",
+          "value": "e9d23cf0067211d2baf018328b507f5153fb6704d75117295a8bda47c7adccb1"
+        },
+        "path": "sst2/test.parquet",
+        "rows": 1821,
+        "split": "test"
+      }
+    ],
+    "name": "GLUE/SST-2",
+    "revision": "bcdcba79d07bc864c1c254ccfcedcce55bcc9a8c",
+    "source": "https://huggingface.co/datasets/nyu-mll/glue"
+  },
+  "matrix_count": 6,
+  "plan_digest": "cd759ba46e7a1fbb1e2cb02ef1e51e5fa98a4f4486c4c4811bc042300e412f16",
+  "plan_id": "lora-p0-20260831",
+  "platform": "macOS-26.5.2-arm64-arm-64bit-Mach-O",
+  "python": "3.14.5"
+}
